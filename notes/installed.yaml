@@ -1,0 +1,7 @@
+1)tailwind css
+2)lucide-react(for icons)
+3)react-router-dom
+4)tailwind merge (for merging Tailwind classes)
+5)@radix-ui/react-toast (for toast notifications)
+6)class-variance-authority (for managing class variants)
+7)clsx (for conditional class names)

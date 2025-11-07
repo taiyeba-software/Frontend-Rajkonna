@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+
+@font-face {
+  font-family: "EduNSWACTCursive-SemiBold";
+  src: url("/assets/fonts/cursive_like/EduNSWACTCursive-SemiBold.ttf") format("truetype");
+  font-weight: semi-bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "MPLUS-Rounded";
+  src: url("/assets/fonts/normal/MPLUSRounded1c-Bold.ttf") format("truetype");
+  font-weight: semi-bold;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "EduCursive";
+  src: url("/assets/fonts/cursive_like/EduNSWACTCursive-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+
+@theme {
+
+  --color-border: hsl(var(--border));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-card1: hsl(var(--card1));
+  --color-card2: hsl(var(--card2));
+  --color-card3: hsl(var(--card3));
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-subtle: pulse-subtle 4s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.7s ease-out forwards;
+  --animate-fade-in-delay-1: fade-in 0.7s ease-out 0.2s forwards;
+  --animate-fade-in-delay-2: fade-in 0.7s ease-out 0.4s forwards;
+  --animate-fade-in-delay-3: fade-in 0.7s ease-out 0.6s forwards;
+  --animate-fade-in-delay-4: fade-in 0.7s ease-out 0.8s forwards;
+  --animate-glitter: glitter 2s ease-in-out infinite;
+
+  @keyframes glow {
+  0%, 100% {
+    box-shadow:
+      0 0 8px hsl(var(--primary)/0.3),
+      0 0 4px hsl(var(--primary)/0.2) inset;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow:
+      0 0 18px hsl(var(--primary)/0.6),
+      0 0 8px hsl(var(--primary)/0.3) inset;
+    transform: translateY(-1px) scale(1.02);
+    filter: brightness(1.15);
+  }
+}
+
+  
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes glitter {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+      filter: blur(0.5px);
+    }
+    25% {
+      transform: scale(1.3);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.6);
+      opacity: 1;
+      filter: blur(0);
+    }
+    75% {
+      transform: scale(1.2);
+      opacity: 0.7;
+    }
+  }
+  
+}
+
+@layer base {
+  :root {
+    --background:340 26% 70%;
+    --foreground: 0 0% 95%;
+
+    --card1: 359 55% 87%;
+    --card2: 30 20% 81%;
+    --card3: 15 22% 46%;
+
+    --primary: 26 44% 89%;
+    --primary-foreground:0 0% 24%;
+
+    --border: 39 30% 84%;
+
+     max-width: 100%;
+     margin: 0 auto;
+     padding: 0;
+    text-align: center;
+  }
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+
+  
+}
+
+@layer utilities{
+   .container{
+      margin-inline: auto;
+      padding-inline: 2rem;
+
+      @media (width >= 640px) {
+        max-width: 640px;
+      }
+      @media (width >= 768px) {
+        max-width: 768px;
+      }
+      @media (width >= 1024px) {
+        max-width: 1024px;
+      }
+      @media (width >= 1280px) {
+        max-width: 1280px;
+      }
+      @media (width >= 1400px) {
+        max-width: 1400px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+
+
+
+
+    }
+
+  .text-glow {
+  @apply relative;
+  text-shadow: 0 0 10px hsl(var(--primary)); /* Soft pink glow */
+  }
+
+  .card-hover {
+  @apply transition-transform duration-300 hover:scale-[1.02] hover:shadow-md;
+  box-shadow: 0 4px 16px hsl(var(--border) / 0.3); /* Soft border-shadow tint */
+  }
+
+  .gradient-border {
+    @apply relative rounded-md;
+    background: linear-gradient(to right, hsl(var(--card1)), hsl(var(--card3)));
+    background-clip: padding-box;
+    border: 1px solid hsl(var(--border));
+  }
+
+  .cosmic-button {
+  @apply px-6 py-2 rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); 
+  text-shadow: 0 0 6px hsl(var(--foreground) / 0.5); 
+  }
+
+
+  .star {
+  @apply absolute rounded-full;
+  background: radial-gradient(white, transparent); 
+  width: 3px;
+  height: 3px;
+  opacity: 0.8;
+  animation: glitter 3s ease-in-out infinite;
+  box-shadow: 0 0 4px white;
+  }
+
+  .glitter-section {
+  position: sticky; 
+  top: 0;
+  min-height: 100vh; 
+  width: 100%;
+  background-color: #ffc0cb; 
+  z-index: 10; 
+  pointer-events: none; 
+  overflow: hidden; 
+  }
+
+  
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+  border: 1px solid hsl(var(--primary)/0.2);
+  background-color: hsl(var(--primary)/0.05);
+  backdrop-filter: blur(4px);
+}
+
+    .vd-pin-section {
+      @apply relative h-screen overflow-hidden z-30;
+    }
+    .video-box {
+      @apply absolute top-0 left-0 w-full h-full object-cover;
+      z-index: 30;
+      will-change: clip-path, opacity;
+    }
+
+    .star-background-container {
+      @apply absolute w-full h-full top-0 left-0 overflow-hidden;
+    }
+
+    .glitter-section {
+      @apply sticky top-0 w-full h-screen bg-pink-300 opacity-50 pointer-events-none z-40;
+    }
+
+    .home-hero-container {
+      @apply relative h-screen overflow-hidden flex items-center justify-center;
+      z-index: 60;
+    }
+
+    .content-wrapper {
+    position: relative; 
+    z-index: 1;
+    background-color: transparent; 
+  }
+
+     .navbar {
+      position: fixed;
+      width: 100%;
+      z-index: 50; 
+    }
+
+      .bg-pink-300 {
+        
+        background-color: hsl(340, 26%, 70%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; 
+      }
+
+      .general-title {
+    transition: clip-path 0.6s ease-out;
+      }
+
+    .video-box {
+      transition: box-shadow 0.3s;
+    }
+    
+        
+    .clip-radiant {
+      clip-path: polygon(
+        5% 0%, 95% 0%, 100% 30%,
+        100% 70%, 95% 100%, 5% 100%,
+        0% 70%, 0% 30%
+      );
+    }
+
+   
+
+    .clip-oval {
+        clip-path: ellipse(48% 55% at 50% 50%);
+      }
+
+    .clip-card {
+        clip-path: polygon(
+          10% 0%, 90% 0%, 100% 20%,
+          100% 80%, 90% 100%, 10% 100%,
+          0% 80%, 0% 20%
+        );
+      }
+
+      
+   .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .gpu {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+
+}
