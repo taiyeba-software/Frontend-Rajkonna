@@ -7,6 +7,7 @@ import { AudioToggle } from "@/components/AudioToggle";
 import { AuthContext } from "../context/AuthContext";
 import { ModalContext } from "../context/ModalContext";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const navItems = [
   { name: "Home", href: "#hero" },
@@ -129,9 +130,9 @@ export const Navbar = () => {
             </>
           )}
 
-          <button className="px-3 py-1 text-sm font-light text-foreground hover:text-primary border border-border hover:border-primary rounded-full transition flex items-center gap-1">
+          <Link to="/cart" className="px-3 py-1 text-sm font-light text-foreground hover:text-primary border border-border hover:border-primary rounded-full transition flex items-center gap-1">
             <ShoppingBag size={18} /> Cart
-          </button>
+          </Link>
 
           <AudioToggle />
         </div>
@@ -196,12 +197,13 @@ export const Navbar = () => {
               </>
             )}
 
-            <button
+            <Link
+              to="/cart"
               className="text-foreground/80 hover:text-primary flex items-center gap-2 hover:underline underline-offset-4"
               onClick={() => setIsMenuOpen(false)}
             >
               <ShoppingBag size={20} /> Cart
-            </button>
+            </Link>
 
             <AudioToggle />
           </div>
