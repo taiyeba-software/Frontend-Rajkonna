@@ -42,7 +42,7 @@ const VideoPinSection = () => {
       {!videoLoaded && (
         <img
           src="/assets/videos/hero-placeholder.jpg" // 👈 put your placeholder image here
-          alt="Rajkonna video loading"
+          alt=""
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out"
           style={{ opacity: videoLoaded ? 0 : 1 }}
         />
