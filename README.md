@@ -1,60 +1,30 @@
-# Rajkonna 👑
+# Rajkonna E-commerce Application
 
-A reimagined luxury skincare website project. Experience the perfect blend of elegance, performance, and conscious beauty with Rajkonna's premium skincare line.
+A modern React-based e-commerce platform with user authentication, product management, and cart functionality.
 
+## Features
 
----
+- **User Authentication**: Login and registration with JWT tokens
+- **Product Management**: Browse, view, and add products to cart
+- **Shopping Cart**: Add items to cart, view cart contents, and checkout
+- **Responsive Design**: Mobile-friendly UI with Tailwind CSS
+- **API Integration**: Backend API for products, cart, and user management
 
-## ✨ Features
+## Tech Stack
 
-- **🎭 Immersive Hero Experience**: Dynamic video background with animated text overlays and smooth parallax effects
-- **⭐ Animated Starry Background**: Multi-layered starfield with glitter animations for a cosmic feel
-- **🌀 Smooth Scrolling**: Lenis-powered smooth scrolling with GSAP animations
-- **🎵 Audio Integration**: Background music toggle for enhanced user experience
-- **📱 Responsive Design**: Fully responsive across all devices with mobile-first approach
-- **🛒 Product Showcase**: Interactive product galleries with hover effects and smooth scrolling
-- **📧 Contact Section**: Elegant contact form with parallax background effects
-- **🎨 Custom Animations**: GSAP-powered animations with ScrollTrigger for engaging interactions
-- **🌿 Conscious Branding**: Clean, conscious, and performance-focused skincare philosophy
+- **Frontend**: React, React Router, Tailwind CSS
+- **State Management**: React Context API
+- **HTTP Client**: Fetch API
+- **Notifications**: React Hot Toast
+- **Icons**: Lucide React
+- **Animations**: GSAP
 
----
-
-## 🛠️ Tech Stack
-
-### Frontend Framework
-- ⚛️ **React 19** - Modern React with latest features
-- 🎞️ **Vite** - Fast build tool and development server
-
-### Animation & Interactions
-- 🎬 **GSAP** - Professional-grade animation library
-- 🌊 **Framer Motion** - React animation library for complex animations
-- 🌀 **Lenis** - Smooth scrolling library
-- 📜 **ScrollTrigger** - GSAP plugin for scroll-based animations
-
-### Styling & UI
-- 🌿 **Tailwind CSS** - Utility-first CSS framework
-- 🎨 **Custom Fonts** - Edu NSW ACT Cursive and MPLUS Rounded fonts
-- 🎯 **Lucide React** - Beautiful icon library
-- 📱 **React Responsive** - Responsive design utilities
-
-### Development Tools
-- 🔧 **ESLint** - Code linting and formatting
-- 📦 **Vite Plugins** - Optimized build and development experience
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn package manager
-
-### Installation
+## Getting Started
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/taiyeba-software/Rajkonna-website.git
-   cd Rajkonna-website
+   git clone <repository-url>
+   cd rajkonna
    ```
 
 2. **Install dependencies**
@@ -68,143 +38,55 @@ A reimagined luxury skincare website project. Experience the perfect blend of el
    ```
 
 4. **Open your browser**
-   Navigate to `http://localhost:5173` to view the application.
+   Navigate to `http://localhost:3000`
 
-### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-```
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-Rajkonna-website/
-├── public/
-│   ├── assets/
-│   │   ├── audio/          # Background music files
-│   │   ├── fonts/          # Custom font files
-│   │   ├── images/         # Static images
-│   │   └── videos/         # Hero video content
-│   ├── facewash/           # Facewash product images
-│   ├── Moisture/           # Moisture product images
-│   └── fab.png            # Favicon
-├── src/
-│   ├── components/
-│   │   ├── AboutSection.jsx    # About section with parallax
-│   │   ├── AudioToggle.jsx     # Background music control
-│   │   ├── Contact.jsx         # Contact form and info
-│   │   ├── Facewash.jsx        # Facewash product gallery
-│   │   ├── Hero.jsx            # Main hero container
-│   │   ├── HeroSection.jsx     # Animated hero text
-│   │   ├── Moisture.jsx        # Moisture product gallery
-│   │   ├── Navbar.jsx          # Navigation component
-│   │   ├── Product.jsx         # Product section wrapper
-│   │   ├── RajkonnaFooter.jsx  # Footer with social links
-│   │   ├── StarBackground.jsx  # Animated starfield
-│   │   └── VideoPinSection.jsx # Video background component
-│   ├── lib/
-│   │   └── utils.jsx          # Utility functions
-│   ├── pages/
-│   │   ├── Home.jsx           # Main landing page
-│   │   └── NotFound.jsx       # 404 error page
-│   ├── styles/
-│   ├── App.jsx                # Main app component
-│   ├── index.css              # Global styles and Tailwind
-│   └── main.jsx               # App entry point
-├── index.html                 # HTML template
-├── package.json               # Dependencies and scripts
-├── vite.config.js             # Vite configuration
-└── README.md                  # Project documentation
+src/
+├── components/          # Reusable UI components
+│   ├── Navbar.jsx      # Navigation bar with cart link
+│   ├── ProductCard.jsx # Product display card
+│   └── modals/         # Modal components for auth
+├── context/            # React Context for state management
+│   ├── AuthContext.jsx # User authentication state
+│   ├── ProductContext.jsx # Product and cart state
+│   └── ModalContext.jsx # Modal state
+├── pages/              # Page components
+│   ├── Home.jsx        # Landing page
+│   ├── ProductListing.jsx # Product list page
+│   ├── ProductDetail.jsx # Individual product page
+│   ├── CartPage.jsx    # Shopping cart page
+│   └── NotFound.jsx    # 404 page
+├── App.jsx             # Main app component with routing
+└── main.jsx            # App entry point
 ```
 
----
+## API Endpoints
 
-## 🎯 Key Components
+- `GET /api/products` - Fetch all products
+- `GET /api/products/:id` - Fetch single product
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `GET /api/cart` - Fetch user's cart
+- `POST /api/cart/items` - Add item to cart
 
-### Hero Section
-- Video background with lazy loading
-- Animated text with GSAP ScrollTrigger
-- Starry background overlay
-- Call-to-action button with hover effects
+## Usage
 
-### Product Galleries
-- Horizontal scrolling product cards
-- Hover effects with image transitions
-- Pricing display with discounts
-- Smooth scroll navigation
+1. **Browse Products**: Visit the home page or products page to see available items
+2. **View Details**: Click on any product to see detailed information
+3. **Add to Cart**: Click "Add to Cart" on product pages (requires login)
+4. **View Cart**: Click the cart icon in the navbar to view cart contents
+5. **Checkout**: Use the checkout button in the cart (currently shows success toast)
 
-### About Section
-- Parallax scrolling effects
-- Animated text reveals
-- Floating rose elements
-- Brand philosophy cards
+## Contributing
 
-### Contact Section
-- Multi-layer parallax background
-- Newsletter subscription form
-- Social media links
-- Contact information
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
----
+## License
 
-## 🎨 Design Philosophy
-
-Rajkonna embodies the concept of "Clean, Conscious, Performance" skincare:
-
-- **Clean**: Transparent ingredients, no harmful chemicals
-- **Conscious**: Planet-friendly, ethically sourced
-- **Performance**: Effective, multi-tasking formulas
-
-The website design reflects this philosophy through:
-- Elegant, minimalist aesthetics
-- Smooth, performant animations
-- Conscious use of resources
-- Accessible and inclusive design
-
----
-
-## 🔧 Customization
-
-### Colors
-The color scheme is defined in `src/index.css` using CSS custom properties:
-```css
-:root {
-  --background: 340 26% 70%;
-  --foreground: 0 0% 95%;
-  --primary: 26 44% 89%;
-  /* ... */
-}
-```
-
-### Fonts
-Custom fonts are loaded from `/public/assets/fonts/`:
-- **Edu NSW ACT Cursive**: For headings and decorative text
-- **MPLUS Rounded**: For body text and UI elements
-
-### Animations
-GSAP animations are configured in individual components. Adjust timing and easing in the respective component files.
-
----
-
-## 📱 Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
----
-
----
-
-
-*Feel like royalty, every single day* 👑
+This project is licensed under the MIT License.
