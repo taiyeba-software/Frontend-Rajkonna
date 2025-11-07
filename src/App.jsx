@@ -1,24 +1,29 @@
-import { BrowserRouter, Routes, Route} from "react-router-dom";
-import Home from "./pages/Home"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Pages
+import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import AuthModal from './components/modals/AuthModal'; // ✅ Add this
+import ProductListing from "./pages/ProductListing"; // Main product page
+import ProductDetail from "./pages/ProductDetail";   // Single product page
+
+// Components
+import AuthModal from "./components/modals/AuthModal";
 
 function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="/products" element={<ProductListing />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
 
-  return(
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Home/>}></Route>
-          <Route path="*" element={<NotFound/>}></Route>
-        </Routes>
-
-        {/* ✅ Global modal mounted once */}
-        <AuthModal />
-      </BrowserRouter>
-    </>
-  )
+      {/* Global modal mounted once */}
+      <AuthModal />
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
  

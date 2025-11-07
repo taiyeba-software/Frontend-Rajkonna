@@ -101,7 +101,7 @@ const HeroSection = () => {
 
       <a
         ref={buttonRef}
-        href="home"
+        href="/products"
         className="mt-14 px-6 py-2 rounded-full bg-[#C8145A] text-white text-sm font-mplus shadow-md animate-glow inline-block pointer-events-auto"
         title="Explore Rajkonna products"
         onMouseEnter={(e) => {

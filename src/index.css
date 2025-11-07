@@ -292,7 +292,7 @@
       transition: box-shadow 0.3s;
     }
     
-        
+ /*       
     .clip-radiant {
       clip-path: polygon(
         5% 0%, 95% 0%, 100% 30%,
@@ -301,7 +301,15 @@
       );
     }
 
-   
+   */
+
+   .clip-radiant {
+      clip-path: polygon(
+        10% 0%, 90% 0%, 100% 20%,
+          100% 80%, 90% 100%, 10% 100%,
+          0% 80%, 0% 20%
+      );
+    }
 
     .clip-oval {
         clip-path: ellipse(48% 55% at 50% 50%);
@@ -324,6 +332,31 @@
   .gpu {
     will-change: transform, opacity;
     transform: translateZ(0);
+  }
+
+  .responsive-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  @media (max-width: 640px) {
+    .responsive-image {
+      height: 150px;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 768px) {
+    .responsive-image {
+      height: 180px;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .responsive-image {
+      height: 200px;
+    }
   }
 
 }

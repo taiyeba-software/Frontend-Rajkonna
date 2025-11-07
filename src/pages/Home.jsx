@@ -1,7 +1,8 @@
 import {Navbar } from "../components/Navbar";
 import { Hero} from "../components/Hero";
 import {AboutSection} from "../components/AboutSection"
-import { Product} from "../components/Product";
+import ProductList from "./ProductList";
+
 import { Contact} from "../components/Contact";
 import { RajkonnaFooter } from "../components/RajkonnaFooter";
 
@@ -16,11 +17,15 @@ const Home = () => (
       </section>
 
     </div>
-    
+
      {/* About section should appear normally, ABOVE z-10 */}
       <section className="relative z-[30]">
         <AboutSection />
-        <Product/>
+
+        <section id="products" className="relative z-[20]">
+          <ProductList /> {/* reusable component */}
+        </section>
+
         <Contact/>
         <RajkonnaFooter/>
       </section>

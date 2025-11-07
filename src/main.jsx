@@ -7,14 +7,17 @@ import './index.css'
 // ✅ import providers and toaster
 import { AuthProvider } from './context/AuthContext'
 import { ModalProvider } from './context/ModalContext'
+import { ProductProvider } from './context/ProductContext'
 import { Toaster } from 'react-hot-toast'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
       <ModalProvider>
-        <App />
-        <Toaster position="top-center" />
+        <ProductProvider>
+          <App />
+          <Toaster position="top-center" />
+        </ProductProvider>
       </ModalProvider>
     </AuthProvider>
   </React.StrictMode>,
