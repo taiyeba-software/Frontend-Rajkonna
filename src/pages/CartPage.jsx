@@ -42,7 +42,7 @@ const CartPage = () => {
   // Destructure totals from cart data
   const { items, subtotal, deliveryCharge, discountPercent, discountAmount, totalPayable } = cart;
 
-  const colorPalette = ['#da627d','#a53860','#f9dbbd' ,'#ffa5ab','#da627d','#a53860', '#450920','#f9dbbd' ,'#ffa5ab','#f9dbbd' ,'#ffa5ab'];
+  const colorPalette = ["#d3f8e2","#e4c1f9","#f694c1","#ede7b1","#a9def9"];
 
   return (
     <div className="min-h-screen bg-background text-black p-6 mx-10%">
