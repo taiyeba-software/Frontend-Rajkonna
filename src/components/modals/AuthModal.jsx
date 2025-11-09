@@ -6,9 +6,6 @@ import { X } from "lucide-react";
 /**
  * AuthModal
  * - Single global modal that shows login OR register based on modalType from ModalContext
- * - Uses AuthContext.login and AuthContext.register
- * - Rajkonna styling: .cosmic-button, .clip-card, .animate-fade-in, font-edu, font-mplus
- * - Closes on overlay click or Escape key
  */
 export default function AuthModal() {
   const { modalType, closeModal, openModal } = useContext(ModalContext);

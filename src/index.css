@@ -202,11 +202,11 @@
   }
 
   .cosmic-button {
-  @apply px-6 py-2 rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95;
+  @apply px-4 py-1 rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95;
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); 
-  text-shadow: 0 0 6px hsl(var(--foreground) / 0.5); 
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  text-shadow: 0 0 6px hsl(var(--foreground) / 0.5);
   }
 
 

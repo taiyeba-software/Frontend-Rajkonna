@@ -14,11 +14,15 @@ const ProductList = () => {
   if (products.length === 0) return <p>No products found.</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {products.map((product) => (
-        <ProductCard key={product._id} product={product} />
-      ))}
-    </div>
+    <section className="relative w-full min-h-screen px-1 ">
+      <div className="min-h-screen bg-background text-foreground p-6 mx-10 my-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -22,7 +22,8 @@ const Home = () => (
       <section className="relative z-[30]">
         <AboutSection />
 
-        <section id="products" className="relative z-[20]">
+        <section id="products" className="relative w-full min-h-screen px-1 ">
+          <h1 className="text-3xl font-bold text-center py-8 text-white">Rajkonna Products</h1>
           <ProductList /> {/* reusable component */}
         </section>
 
