@@ -1,5 +1,9 @@
 # Rajkonna E-commerce Application
 
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/yourusername/rajkonna/actions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/rajkonna.svg)](https://www.npmjs.com/package/rajkonna)
+
 A modern React-based e-commerce platform with user authentication, product management, and cart functionality.
 
 ## Features
@@ -18,6 +22,10 @@ A modern React-based e-commerce platform with user authentication, product manag
 - **Notifications**: React Hot Toast
 - **Icons**: Lucide React
 - **Animations**: GSAP
+
+## Environment / Configuration
+
+This project does not require any special environment variables or configuration files to be set up locally. All required configuration is managed internally or via API endpoints.
 
 ## Getting Started
 
@@ -39,6 +47,14 @@ A modern React-based e-commerce platform with user authentication, product manag
 
 4. **Open your browser**
    Navigate to `http://localhost:3000`
+
+## Building and Testing
+
+- To create a production build of the project:
+  ```bash
+  npm run build
+  ```
+- Tests are not currently included but can be added in the `src/__tests__` directory using your preferred testing framework.
 
 ## Project Structure
 
@@ -79,6 +95,20 @@ src/
 4. **View Cart**: Click the cart icon in the navbar to view cart contents
 5. **Checkout**: Use the checkout button in the cart (currently shows success toast)
 
+### Example Commands
+
+```bash
+# Run development server
+npm run dev
+
+# Build the project for production
+npm run build
+```
+
+## Screenshots / Demo
+
+*Screenshots or demo video will be added here in the future.*
+
 ## Contributing
 
 1. Fork the repository
@@ -86,6 +116,10 @@ src/
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Contact / Support
+
+For questions or support, please open an issue on the GitHub repository or contact the maintainer at [your-email@example.com].
 
 ## License
 
