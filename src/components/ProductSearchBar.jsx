@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useProducts } from "../context/ProductContext";
+import { useProducts } from "../context/useProducts";
 
 const ProductSearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -7,7 +7,7 @@ const ProductSearchBar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchProducts(searchTerm); // send searchTerm to context
+    fetchProducts({ q: searchTerm }); // send searchTerm to context as query object
   };
 
   return (

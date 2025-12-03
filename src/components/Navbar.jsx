@@ -6,8 +6,8 @@ import { Menu, X, ShoppingBag, LogIn } from "lucide-react";
 import { AudioToggle } from "@/components/AudioToggle";
 import { AuthContext } from "../context/AuthContext";
 import { ModalContext } from "../context/ModalContext";
-import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import ProfileSidebar from "./ProfileSidebar";
 
 const navItems = [
   { name: "Home", href: "#hero" },
@@ -19,6 +19,7 @@ const navItems = [
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
   const navContainerRef = useRef(null);
   const { user, logout } = useContext(AuthContext);
   const { openModal } = useContext(ModalContext);
@@ -114,9 +115,7 @@ export const Navbar = () => {
           ) : (
             <>
               <button
-                onClick={() =>
-                  toast.success(`Welcome ${user.name || "User"} 💖`, { style: { fontFamily: "MPLUSRounded" } })
-                }
+                onClick={() => setIsProfileSidebarOpen(true)}
                 className="px-3 py-1 text-sm font-light text-foreground hover:text-primary border border-border hover:border-primary rounded-full transition flex items-center gap-1"
               >
                 Profile
@@ -183,7 +182,7 @@ export const Navbar = () => {
             ) : (
               <>
                 <button
-                  onClick={() => { toast.success(`Welcome ${user.name || "User"} 💖`); setIsMenuOpen(false); }}
+                  onClick={() => { setIsProfileSidebarOpen(true); setIsMenuOpen(false); }}
                   className="text-foreground/80 hover:text-primary flex items-center gap-2 hover:underline underline-offset-4"
                 >
                   Profile
@@ -209,6 +208,12 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Profile Sidebar */}
+      <ProfileSidebar
+        isOpen={isProfileSidebarOpen}
+        onClose={() => setIsProfileSidebarOpen(false)}
+      />
     </nav>
   );
 };

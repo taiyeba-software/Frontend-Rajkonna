@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useProducts } from "../context/ProductContext";
+import { useProducts } from "../context/useProducts";
 import { useAuth } from "../context/AuthContext";
 
 const EditProduct = () => {

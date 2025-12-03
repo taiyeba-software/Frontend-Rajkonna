@@ -1,5 +1,5 @@
 import React from "react";
-import { useProducts } from "../context/ProductContext";
+import { useProducts } from "../context/useProducts";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import  StarBackground  from "./StarBackground";
@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
           className="w-full h-48 object-cover rounded responsive-image"
         />
         <h2 className="text-xl font-semibold mt-3 text-foreground" style={{ fontFamily: "MPLUS-Rounded" }}>{product.name}</h2>
-        <p className="text-gray-600 mt-1" style={{ fontFamily: "EduCursive" }}>{product.description}</p>
+        <p className="text-gray-600 mt-1" style={{ fontFamily: "EduCursive" }}>{product.description}. </p>
         <p className="text-primary font-bold mt-2" style={{ fontFamily: "MPLUS-Rounded" }}>৳{product.price}</p>
       </Link>
 

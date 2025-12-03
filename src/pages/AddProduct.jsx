@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useProducts } from "../context/ProductContext";
+import { useProducts } from "../context/useProducts";
 import { useAuth } from "../context/AuthContext";
 
 const AddProduct = () => {

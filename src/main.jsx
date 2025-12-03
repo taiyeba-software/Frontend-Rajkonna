@@ -7,7 +7,7 @@ import './index.css'
 // ✅ import providers and toaster
 import { AuthProvider } from './context/AuthContext'
 import { ModalProvider } from './context/ModalContext'
-import { ProductProvider } from './context/ProductContext'
+import { ProductProvider } from './context/ProductProvider'
 import { Toaster } from 'react-hot-toast'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
