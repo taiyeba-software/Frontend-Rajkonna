@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ProductContext } from "../context/ProductContext";
 import ProductCard from "../components/ProductCard";
 import ProfileSidebar from "../components/ProfileSidebar";
@@ -6,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 
 const ProductListing = () => {
+  const navigate = useNavigate();
   const { products, fetchProducts, loading, error } = useContext(ProductContext);
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,7 +32,14 @@ const ProductListing = () => {
   return (
     <>
       <section className="relative w-full min-h-screen px-1 ">
+          <button
+            onClick={() => navigate('/')}
+            className="absolute left-4 top-4 px-4 py-2 bg-[#7ca4a1] text-white rounded-lg hover:bg-indigo-600 transition-colors"
+          >
+            Back to Home
+          </button>
           <div className="min-h-screen bg-background text-foreground p-6 mx-8">
+
           <h1 className="text-3xl font-bold mb-6" style={{ fontFamily: 'EduNSWACTCursive-SemiBold, cursive' }}>Products</h1>
 
           {/* Search Bar */}

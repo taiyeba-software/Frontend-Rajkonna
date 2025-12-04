@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +14,13 @@ const AdminDashboard = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
-  const [userLoading, setUserLoading] = useState(false);
+  const [userDetailsLoading, setUserDetailsLoading] = useState(false);
+  const [userDetailsError, setUserDetailsError] = useState(null);
+  const profileCache = useRef({});
+  const { user } = useAuth();
+
+
+
 
   // Fetch orders
   const fetchOrders = async (currentPage = 1) => {
@@ -39,53 +45,12 @@ const AdminDashboard = () => {
     }
   };
 
-  // Fetch user details using profile endpoint with userId parameter
-  const fetchUserDetails = async (userId) => {
-    // Security check: Only allow admins to fetch other users' profiles
-    if (!user || user.role !== 'admin') {
-      toast.error('Unauthorized: Admin access required');
-      setUserDetails(null);
-      setUserLoading(false);
-      return;
-    }
 
-    setUserLoading(true);
-    try {
-      const response = await fetch(`/api/auth/profile?userId=${userId}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to fetch user details (${response.status})`);
-      }
-      const data = await response.json();
-      setUserDetails(data.user || data);
-    } catch (err) {
-      console.error('Failed to fetch user details:', err);
-      toast.error(`Failed to load customer details: ${err.message}`);
-      // Fallback: Use basic user info from order data if available
-      if (selectedOrder && selectedOrder.user) {
-        setUserDetails({
-          _id: selectedOrder.user,
-          name: 'User details not available',
-          email: 'N/A',
-          phone: 'N/A',
-          address: 'N/A'
-        });
-      } else {
-        setUserDetails(null);
-      }
-    } finally {
-      setUserLoading(false);
-    }
-  };
 
   // Fetch order details
   const fetchOrderDetails = async (orderId) => {
     setLoading(true);
     setError(null);
-    setUserDetails(null);
     try {
       const response = await fetch(`/api/orders/${orderId}`, {
         method: 'GET',
@@ -96,12 +61,26 @@ const AdminDashboard = () => {
       }
       const data = await response.json();
       setSelectedOrder(data);
-      setShowDetails(true);
+      // Reset any previous user details
+      setUserDetails(null);
+      setUserDetailsError(null);
 
-      // Fetch user details if user ID is available
-      if (data.user) {
-        fetchUserDetails(data.user);
+      // If current viewer is admin and order contains a user id, fetch profile
+      const orderUserId = data?.user && typeof data.user === 'string' ? data.user : data?.user?._id;
+      if (user && user.role === 'admin' && orderUserId) {
+        try {
+          setUserDetailsLoading(true);
+          const profile = await getProfileCached(orderUserId);
+          setUserDetails(profile);
+        } catch (err) {
+          setUserDetailsError(err.message || 'Failed to load customer details');
+          // show a non-blocking toast but keep order details visible
+          toast.error(err.message || 'Failed to load customer details');
+        } finally {
+          setUserDetailsLoading(false);
+        }
       }
+      setShowDetails(true);
     } catch {
       setError('Failed to load order details');
       toast.error('Failed to load order details');
@@ -110,11 +89,91 @@ const AdminDashboard = () => {
     }
   };
 
+  // Cached profile fetcher
+  async function getProfileCached(userId) {
+    if (!userId) return null;
+    if (profileCache.current[userId]) return profileCache.current[userId];
+
+    const res = await fetch(`/api/auth/profile?userId=${userId}`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      // Handle specific statuses for better UX
+      if (res.status === 403) throw new Error('Forbidden: insufficient permissions to view profile');
+      if (res.status === 404) throw new Error('Customer not found');
+      if (res.status === 401) throw new Error('Unauthorized: please login');
+      throw new Error('Profile fetch failed');
+    }
+
+    const data = await res.json();
+    const profile = data?.user || null;
+    if (profile) profileCache.current[userId] = profile;
+    return profile;
+  }
+
+  // Try to extract customer info from known order fields as a best-effort fallback
+  function extractCustomerInfo(order) {
+    if (!order) return null;
+
+    // If order.user is an object, prefer that
+    if (order.user && typeof order.user === 'object') {
+      return {
+        name: order.user.name || order.user.fullName || order.user.customerName || null,
+        email: order.user.email || order.user.customerEmail || null,
+        phone: order.user.phone || order.user.mobile || null,
+        address:
+          order.user.address || order.user.location || (order.user.shipping && order.user.shipping.address) || null,
+      };
+    }
+
+    // Common top-level fields used by various backends
+    const name = order.customerName || order.name || order.customer || order.buyerName || null;
+    const email = order.customerEmail || order.email || order.buyerEmail || null;
+    const phone = order.customerPhone || order.phone || order.contact || order.buyerPhone || null;
+    const address =
+      order.shippingAddress || order.address || (order.shipping && order.shipping.address) || null;
+
+    if (name || email || phone || address) return { name, email, phone, address };
+
+    return null;
+  }
+
 
 
   useEffect(() => {
     fetchOrders(page);
   }, [page]);
+
+  // Prefetch profiles for visible orders on the page (admin-only)
+  useEffect(() => {
+    if (!orders || orders.length === 0) return;
+    if (!user || user.role !== 'admin') return;
+
+    const uniqueIds = Array.from(
+      new Set(
+        orders
+          .map((o) => (o && o.user && typeof o.user === 'string' ? o.user : o?.user?._id))
+          .filter(Boolean)
+      )
+    );
+
+    // Only prefetch ids not already cached
+    const idsToFetch = uniqueIds.filter((id) => !profileCache.current[id]);
+    if (idsToFetch.length === 0) return;
+
+    // Batch prefetch to avoid too many simultaneous requests
+    const batchSize = 5;
+    (async function prefetch() {
+      for (let i = 0; i < idsToFetch.length; i += batchSize) {
+        const batch = idsToFetch.slice(i, i + batchSize);
+        await Promise.all(
+          batch.map((id) => getProfileCached(id).catch(() => null))
+        );
+      }
+    })();
+  }, [orders, user]);
 
   const handleViewOrder = (orderId) => {
     fetchOrderDetails(orderId);
@@ -150,7 +209,7 @@ const AdminDashboard = () => {
           {!loading && orders.length === 0 && <div>No orders found.</div>}
           {!loading && orders.length > 0 && (
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-border">
+              <table className="w-full border-collapse border border-border text-black">
                 <thead>
                   <tr className="bg-card1">
                     <th className="border border-border p-2">Status</th>
@@ -201,70 +260,70 @@ const AdminDashboard = () => {
         {showDetails && selectedOrder && (
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Order Details</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Customer Information */}
-              <div className="bg-card2 p-4 rounded">
-                <h3 className="text-xl font-semibold mb-3 text-[#7ca4a1]">Customer Information</h3>
-                {userLoading ? (
-                  <div className="text-sm text-gray-500">Loading customer details...</div>
-                ) : userDetails ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">Name:</span>
-                      <span className="text-sm">{userDetails.name || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">Phone:</span>
-                      <span className="text-sm">{userDetails.phone || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">Email:</span>
-                      <span className="text-sm">{userDetails.email || 'N/A'}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-medium text-sm">Address:</span>
-                      <span className="text-sm text-gray-600">
-                        {userDetails.address && typeof userDetails.address === 'object'
-                          ? `${userDetails.address.line1 || ''} ${userDetails.address.line2 || ''}, ${userDetails.address.city || ''}, ${userDetails.address.state || ''} ${userDetails.address.postalCode || ''}, ${userDetails.address.country || ''}`.replace(/,\s*,/g, ',').replace(/^,\s*|,\s*$/g, '').trim() || 'N/A'
-                          : userDetails.address || 'N/A'
-                        }
-                      </span>
-                    </div>
-                  </div>
+            {/* Order Summary */}
+            <div className="bg-card2 p-4 rounded text-black">
+              <h3 className="text-xl font-semibold mb-3 text-[#7ca4a1]">Order Summary</h3>
+
+              {/* Customer Details (from profile endpoint when admin) */}
+              <div className="mb-4">
+                <h4 className="text-lg font-medium">Customer</h4>
+                {userDetailsLoading ? (
+                  <div className="text-sm">Loading customer details...</div>
                 ) : (
-                  <div className="text-sm text-gray-500">Customer details not available</div>
+                  (() => {
+                    const extracted = extractCustomerInfo(selectedOrder);
+                    const display = userDetails || extracted;
+                    const hasAny = display && (display.name || display.phone || display.email || display.address);
+
+                    if (hasAny) {
+                      return (
+                        <div className="text-sm">
+                          <div>Name: {display.name || 'N/A'}</div>
+                          <div>Phone: {display.phone || 'N/A'}</div>
+                          <div>Email: {display.email || 'N/A'}</div>
+                          <div>Address: {display.address || 'N/A'}</div>
+                        </div>
+                      );
+                    }
+
+                    // If there's a user id (string) show it and note profile unavailable
+                    if (selectedOrder.user && typeof selectedOrder.user === 'string') {
+                      return <div className="text-sm">User ID: {selectedOrder.user} — profile not available</div>;
+                    }
+
+                    return <div className="text-sm">Customer details not available</div>;
+                  })()
+                )}
+                {userDetailsError && (
+                  <div className="text-sm text-red-500 mt-2">{userDetailsError}</div>
                 )}
               </div>
 
-              {/* Order Summary */}
-              <div className="bg-card2 p-4 rounded">
-                <h3 className="text-xl font-semibold mb-3 text-[#7ca4a1]">Order Summary</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm">Status:</span>
-                    <span className="text-sm font-medium">{selectedOrder.status}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Payment Method:</span>
-                    <span className="text-sm font-medium">{selectedOrder.paymentMethod}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Subtotal:</span>
-                    <span className="text-sm">৳{selectedOrder.subtotal}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Delivery Charge:</span>
-                    <span className="text-sm">৳{selectedOrder.deliveryCharge}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Discount:</span>
-                    <span className="text-sm text-green-600">-৳{selectedOrder.discountAmount}</span>
-                  </div>
-                  <hr className="my-2" />
-                  <div className="flex justify-between font-semibold">
-                    <span className="text-sm">Total Payable:</span>
-                    <span className="text-sm">৳{selectedOrder.totalPayable}</span>
-                  </div>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm">Status:</span>
+                  <span className="text-sm font-medium">{selectedOrder.status}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Payment Method:</span>
+                  <span className="text-sm font-medium">{selectedOrder.paymentMethod}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Subtotal:</span>
+                  <span className="text-sm">৳{selectedOrder.subtotal}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Delivery Charge:</span>
+                  <span className="text-sm">৳{selectedOrder.deliveryCharge}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Discount:</span>
+                  <span className="text-sm text-green-600">-৳{selectedOrder.discountAmount}</span>
+                </div>
+                <hr className="my-2" />
+                <div className="flex justify-between font-semibold">
+                  <span className="text-sm">Total Payable:</span>
+                  <span className="text-sm">৳{selectedOrder.totalPayable}</span>
                 </div>
               </div>
             </div>
@@ -272,7 +331,7 @@ const AdminDashboard = () => {
             {/* Items List */}
             <div className="bg-card2 p-4 rounded mt-6">
               <h3 className="text-xl font-semibold mb-3 text-[#7ca4a1]">Items</h3>
-              <div className="space-y-3">
+              <div className="space-y-3 text-black">
                 {selectedOrder.items && selectedOrder.items.map((item, index) => (
                   <div key={index} className="flex justify-between items-center p-3 bg-background/50 rounded">
                     <div className="flex-1">

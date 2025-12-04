@@ -1,4 +1,5 @@
 
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       localStorage.removeItem("user");
       toast.success("Logged out successfully!");
-    } catch (err) {
+    } catch {
       toast.error("Logout failed");
     }
   };
