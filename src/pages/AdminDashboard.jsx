@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
+import { gsap } from 'gsap';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -12,12 +12,9 @@ const AdminDashboard = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
-  const [userDetailsLoading, setUserDetailsLoading] = useState(false);
-  const [userDetailsError, setUserDetailsError] = useState(null);
-  const profileCache = useRef({});
-  const { user } = useAuth();
+  const tbodyRef = useRef(null);
 
 
 
@@ -61,25 +58,7 @@ const AdminDashboard = () => {
       }
       const data = await response.json();
       setSelectedOrder(data);
-      // Reset any previous user details
-      setUserDetails(null);
-      setUserDetailsError(null);
-
-      // If current viewer is admin and order contains a user id, fetch profile
-      const orderUserId = data?.user && typeof data.user === 'string' ? data.user : data?.user?._id;
-      if (user && user.role === 'admin' && orderUserId) {
-        try {
-          setUserDetailsLoading(true);
-          const profile = await getProfileCached(orderUserId);
-          setUserDetails(profile);
-        } catch (err) {
-          setUserDetailsError(err.message || 'Failed to load customer details');
-          // show a non-blocking toast but keep order details visible
-          toast.error(err.message || 'Failed to load customer details');
-        } finally {
-          setUserDetailsLoading(false);
-        }
-      }
+      setSelectedOrderId(orderId);
       setShowDetails(true);
     } catch {
       setError('Failed to load order details');
@@ -89,94 +68,43 @@ const AdminDashboard = () => {
     }
   };
 
-  // Cached profile fetcher
-  async function getProfileCached(userId) {
-    if (!userId) return null;
-    if (profileCache.current[userId]) return profileCache.current[userId];
-
-    const res = await fetch(`/api/auth/profile?userId=${userId}`, {
-      method: 'GET',
-      credentials: 'include',
-    });
-
-    if (!res.ok) {
-      // Handle specific statuses for better UX
-      if (res.status === 403) throw new Error('Forbidden: insufficient permissions to view profile');
-      if (res.status === 404) throw new Error('Customer not found');
-      if (res.status === 401) throw new Error('Unauthorized: please login');
-      throw new Error('Profile fetch failed');
-    }
-
-    const data = await res.json();
-    const profile = data?.user || null;
-    if (profile) profileCache.current[userId] = profile;
-    return profile;
-  }
-
-  // Try to extract customer info from known order fields as a best-effort fallback
-  function extractCustomerInfo(order) {
-    if (!order) return null;
-
-    // If order.user is an object, prefer that
-    if (order.user && typeof order.user === 'object') {
-      return {
-        name: order.user.name || order.user.fullName || order.user.customerName || null,
-        email: order.user.email || order.user.customerEmail || null,
-        phone: order.user.phone || order.user.mobile || null,
-        address:
-          order.user.address || order.user.location || (order.user.shipping && order.user.shipping.address) || null,
-      };
-    }
-
-    // Common top-level fields used by various backends
-    const name = order.customerName || order.name || order.customer || order.buyerName || null;
-    const email = order.customerEmail || order.email || order.buyerEmail || null;
-    const phone = order.customerPhone || order.phone || order.contact || order.buyerPhone || null;
-    const address =
-      order.shippingAddress || order.address || (order.shipping && order.shipping.address) || null;
-
-    if (name || email || phone || address) return { name, email, phone, address };
-
-    return null;
-  }
-
-
-
   useEffect(() => {
     fetchOrders(page);
   }, [page]);
 
-  // Prefetch profiles for visible orders on the page (admin-only)
   useEffect(() => {
-    if (!orders || orders.length === 0) return;
-    if (!user || user.role !== 'admin') return;
-
-    const uniqueIds = Array.from(
-      new Set(
-        orders
-          .map((o) => (o && o.user && typeof o.user === 'string' ? o.user : o?.user?._id))
-          .filter(Boolean)
-      )
-    );
-
-    // Only prefetch ids not already cached
-    const idsToFetch = uniqueIds.filter((id) => !profileCache.current[id]);
-    if (idsToFetch.length === 0) return;
-
-    // Batch prefetch to avoid too many simultaneous requests
-    const batchSize = 5;
-    (async function prefetch() {
-      for (let i = 0; i < idsToFetch.length; i += batchSize) {
-        const batch = idsToFetch.slice(i, i + batchSize);
-        await Promise.all(
-          batch.map((id) => getProfileCached(id).catch(() => null))
-        );
-      }
-    })();
-  }, [orders, user]);
+    if (tbodyRef.current) {
+      const rows = tbodyRef.current.querySelectorAll('tr[data-id]');
+      rows.forEach(row => {
+        const rowId = row.getAttribute('data-id');
+        if (rowId === selectedOrderId) {
+          gsap.to(row, { backgroundColor: '#fb6f92', duration: 1, ease: 'sine.out' });
+        } else {
+          gsap.to(row, { backgroundColor: '#f5f5f5', duration: 1, ease: 'sine.out' }); // Assuming bg-card2 is #f5f5f5
+        }
+      });
+    }
+  }, [selectedOrderId]);
 
   const handleViewOrder = (orderId) => {
     fetchOrderDetails(orderId);
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (!confirm('Are you sure you want to delete this order?')) return;
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete order');
+      }
+      toast.success('Order deleted successfully');
+      fetchOrders(page); // Refresh the orders list
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete order');
+    }
   };
 
   const handlePrevPage = () => {
@@ -205,10 +133,14 @@ const AdminDashboard = () => {
         {/* Orders List */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Orders List</h2>
-          {loading && <div>Loading...</div>}
-          {!loading && orders.length === 0 && <div>No orders found.</div>}
-          {!loading && orders.length > 0 && (
-            <div className="overflow-x-auto">
+          {orders.length === 0 && !loading && <div>No orders found.</div>}
+          {orders.length > 0 && (
+            <div className="overflow-x-auto relative">
+              {loading && (
+                <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+                  <div>Loading...</div>
+                </div>
+              )}
               <table className="w-full border-collapse border border-border text-black">
                 <thead>
                   <tr className="bg-card1">
@@ -217,17 +149,26 @@ const AdminDashboard = () => {
                     <th className="border border-border p-2">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody ref={tbodyRef}>
                   {orders.map((order) => (
-                    <tr key={order._id} className="bg-card2">
+                    <tr key={order._id} data-id={order._id} style={{ backgroundColor: '#f5f5f5' }}>
                       <td className="border border-border p-2">{order.status}</td>
                       <td className="border border-border p-2">৳{order.totalPayable}</td>
                       <td className="border border-border p-2">
                         <button
                           onClick={() => handleViewOrder(order._id)}
-                          className="cosmic-button text-sm"
+                          disabled={loading}
+                          className="cosmic-button text-sm mr-2"
                         >
                           View
+                        </button>
+                        <button
+                          onClick={() => handleDeleteOrder(order._id)}
+                          disabled={loading}
+                          className="text-white px-2 py-1 rounded text-sm hover:opacity-80"
+                          style={{ backgroundColor: 'crimson' }}
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -264,38 +205,18 @@ const AdminDashboard = () => {
             <div className="bg-card2 p-4 rounded text-black">
               <h3 className="text-xl font-semibold mb-3 text-[#7ca4a1]">Order Summary</h3>
 
-              {/* Customer Details (from profile endpoint when admin) */}
+              {/* Customer Details */}
               <div className="mb-4">
                 <h4 className="text-lg font-medium">Customer</h4>
-                {userDetailsLoading ? (
-                  <div className="text-sm">Loading customer details...</div>
+                {selectedOrder.user ? (
+                  <div className="text-sm">
+                    <div>Name: {selectedOrder.user.name || 'N/A'}</div>
+                    <div>Phone: {selectedOrder.user.phone || 'N/A'}</div>
+                    <div>Email: {selectedOrder.user.email || 'N/A'}</div>
+                    <div>Address: {selectedOrder.user.address ? JSON.stringify(selectedOrder.user.address) : 'N/A'}</div>
+                  </div>
                 ) : (
-                  (() => {
-                    const extracted = extractCustomerInfo(selectedOrder);
-                    const display = userDetails || extracted;
-                    const hasAny = display && (display.name || display.phone || display.email || display.address);
-
-                    if (hasAny) {
-                      return (
-                        <div className="text-sm">
-                          <div>Name: {display.name || 'N/A'}</div>
-                          <div>Phone: {display.phone || 'N/A'}</div>
-                          <div>Email: {display.email || 'N/A'}</div>
-                          <div>Address: {display.address || 'N/A'}</div>
-                        </div>
-                      );
-                    }
-
-                    // If there's a user id (string) show it and note profile unavailable
-                    if (selectedOrder.user && typeof selectedOrder.user === 'string') {
-                      return <div className="text-sm">User ID: {selectedOrder.user} — profile not available</div>;
-                    }
-
-                    return <div className="text-sm">Customer details not available</div>;
-                  })()
-                )}
-                {userDetailsError && (
-                  <div className="text-sm text-red-500 mt-2">{userDetailsError}</div>
+                  <div className="text-sm">Customer details not available</div>
                 )}
               </div>
 

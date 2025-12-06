@@ -167,14 +167,14 @@ export const ProductProvider = ({ children }) => {
   };
 
   // 🟢 Clear entire cart
-  const clearCart = async (user) => {
+  const clearCart = async (user, skipConfirm = false) => {
     if (!user) {
       toast.error("You must be logged in to clear cart!");
       return;
     }
 
-    // Confirm before clearing
-    if (!window.confirm("Are you sure you want to clear your entire cart?")) {
+    // Confirm before clearing unless skipped
+    if (!skipConfirm && !window.confirm("Are you sure you want to clear your entire cart?")) {
       return;
     }
 

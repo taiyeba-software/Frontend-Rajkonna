@@ -94,7 +94,7 @@ const CartPage = () => {
       });
       if (response.ok) {
         toast.success('Order placed successfully!');
-        await clearCart(user); // Clear the cart after successful order
+        await clearCart(user, true); // Clear the cart after successful order without confirmation
         await fetchCart(); // Refresh cart data
       } else {
         const errorData = await response.json();

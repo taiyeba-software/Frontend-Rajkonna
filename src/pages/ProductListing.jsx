@@ -32,12 +32,15 @@ const ProductListing = () => {
   return (
     <>
       <section className="relative w-full min-h-screen px-1 ">
-          <button
-            onClick={() => navigate('/')}
-            className="absolute left-4 top-4 px-4 py-2 bg-[#7ca4a1] text-white rounded-lg hover:bg-indigo-600 transition-colors"
-          >
-            Back to Home
-          </button>
+
+          <div className="absolute top-2 right-2 md:top-4 md:right-4">
+            <button
+              onClick={() => navigate('/')}
+              className="cosmic-button text-xs md:text-sm mr-2"
+            >
+              Back to Home
+            </button>
+          </div>
           <div className="min-h-screen bg-background text-foreground p-6 mx-8">
 
           <h1 className="text-3xl font-bold mb-6" style={{ fontFamily: 'EduNSWACTCursive-SemiBold, cursive' }}>Products</h1>
