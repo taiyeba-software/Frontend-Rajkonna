@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductContext } from "../context/ProductContext";
 import ProductCard from "../components/ProductCard";
+import { normalizeId } from "../lib/utils";
 import ProfileSidebar from "../components/ProfileSidebar";
 import { useAuth } from "../context/AuthContext";
 
@@ -59,9 +60,9 @@ const ProductListing = () => {
 
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+              {products.map((product) => (
+                <ProductCard key={normalizeId(product._id)} product={product} />
+              ))}
           </div>
         </div>
       </section>

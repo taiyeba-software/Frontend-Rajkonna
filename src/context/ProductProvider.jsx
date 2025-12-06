@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { ProductContext } from "./ProductContext";
+import { normalizeId } from "../lib/utils";
 
 // 🔧 Use environment variable or fallback to localhost
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -59,7 +60,7 @@ export const ProductProvider = ({ children }) => {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product._id, qty: 1 }),
+        body: JSON.stringify({ productId: normalizeId(product._id || product), qty: 1 }),
       });
 
       const result = await res.json();
@@ -101,7 +102,7 @@ export const ProductProvider = ({ children }) => {
   const editProduct = async (id, updatedProduct, user) => {
     if (!user?.isAdmin) return toast.error("Not authorized!");
     try {
-      const res = await fetch(`${API_BASE}/api/products/${id}`, {
+      const res = await fetch(`${API_BASE}/api/products/${normalizeId(id)}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -111,7 +112,7 @@ export const ProductProvider = ({ children }) => {
 
       const data = await res.json();
       setProducts((prev) =>
-        prev.map((p) => (p._id === id ? data.product || data : p))
+        prev.map((p) => (normalizeId(p._id) === normalizeId(id) ? data.product || data : p))
       );
       toast.success("Product updated successfully!");
     } catch (err) {
@@ -124,13 +125,13 @@ export const ProductProvider = ({ children }) => {
   const deleteProduct = async (id, user) => {
     if (!user?.isAdmin) return toast.error("Not authorized!");
     try {
-      const res = await fetch(`${API_BASE}/api/products/${id}`, {
+      const res = await fetch(`${API_BASE}/api/products/${normalizeId(id)}`, {
         method: "DELETE",
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to delete product");
 
-      setProducts((prev) => prev.filter((p) => p._id !== id));
+      setProducts((prev) => prev.filter((p) => normalizeId(p._id) !== normalizeId(id)));
       toast.success("Product deleted successfully!");
     } catch (err) {
       console.error("deleteProduct error:", err);

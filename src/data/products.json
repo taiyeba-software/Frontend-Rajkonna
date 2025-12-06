@@ -1,0 +1,265 @@
+[{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c4"
+  },
+  "name": "Glow Face Wash",
+  "description": "Brightening face wash with fruit extracts for an instant glow.",
+  "price": 440,
+  "stock": 50,
+  "category": "Face Wash",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/cc0daa9a-aec5-4cc7-983e-703667a373eb_glow_face_wash_nTXo3ixwPp.jpg",
+      "filename": "glow_face_wash.jpg"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685cc"
+  },
+  "name": "Herbal Toner",
+  "description": "Refreshing toner that tightens pores and balances skin pH naturally.",
+  "price": 410,
+  "stock": 29,
+  "category": "Toner",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/bb525899-4002-42d0-8f73-ee1b9adec645_toner_ankIQcZ6p.jpg",
+      "filename": "toner.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:38.924Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c7"
+  },
+  "name": "Odu Lotion",
+  "description": "Light and fragrant lotion that keeps skin moisturized all day.",
+  "price": 470,
+  "stock": 52,
+  "category": "Lotion",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/2c786845-7b80-40c8-a475-acf5355a618a_odu_lotion_6Z4sCXosD.jpg",
+      "filename": "odu_lotion.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T01:02:41.301Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c9"
+  },
+  "name": "Pink Body Wash",
+  "description": "Soothing body wash with rose extract for smooth and fragrant skin.",
+  "price": 370,
+  "stock": 30,
+  "category": "Body Wash",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/01008191-b6e4-4b29-a550-21ae6748b1a2_pink_body_wash_y94kLJW6HK.jpg",
+      "filename": "pink_body_wash.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:38.750Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c0"
+  },
+  "name": "Blue Body Wash",
+  "description": "Hydrating body wash that leaves your skin soft, smooth, and refreshed.",
+  "price": 380,
+  "stock": 31,
+  "category": "Body Wash",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/15b0cc74-6d67-41ea-99cd-eb751c1db8c4_blue_body_wash_ixvOM-hbJ.jpg",
+      "filename": "blue_body_wash.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:38.076Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c3"
+  },
+  "name": "Facial Scrub",
+  "description": "Gentle exfoliating scrub that removes dead skin cells for a radiant glow.",
+  "price": 430,
+  "stock": 31,
+  "category": "Scrub",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/23adbe72-ae16-420d-9e2f-d545e6e43e32_facial_scrub_kqvGD8m4G.jpg",
+      "filename": "facial_scrub.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:38.581Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c5"
+  },
+  "name": "Hair Repair Pack",
+  "description": "Restorative hair mask that strengthens and repairs damaged hair.",
+  "price": 560,
+  "stock": 38,
+  "category": "Hair Care",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/11a902a2-d335-4a75-9527-be859cb1f127_hair_repair_pack_B5UpYJwEv.jpg",
+      "filename": "hair_repair_pack.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T01:02:41.122Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685cb"
+  },
+  "name": "Sunscreen SPF 50",
+  "description": "Non-greasy sunscreen that protects from UVA & UVB rays while hydrating your skin.",
+  "price": 480,
+  "stock": 51,
+  "category": "Sunscreen",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/cf9df68f-b8d4-4b8f-a0bb-5b902d1e04ef_sunscreen_wDaM-LzH3.jpg",
+      "filename": "sunscreen.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:38.243Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c8"
+  },
+  "name": "Olive Oil",
+  "description": "Pure olive oil that deeply nourishes skin and hair.",
+  "price": 500,
+  "stock": 61,
+  "category": "Oil",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/427ded8b-e9e1-475e-9c3f-5dbf778bab48_olive_oil_4-zeytTkS.jpg",
+      "filename": "olive_oil.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:38.413Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685ca"
+  },
+  "name": "Red Chandan Powder",
+  "description": "Natural red sandalwood powder for glowing, blemish-free skin.",
+  "price": 350,
+  "stock": 15,
+  "category": "Face Pack",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/66985186-659d-4e6a-82ea-8c7a8107de92_red_chandan_powder_sKIkXICYg.jpg",
+      "filename": "red_chandan_powder.jpg"
+    }
+  ],
+  "updatedAt": {
+    "$date": "2025-12-06T00:58:37.908Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685bf"
+  },
+  "name": "Acne Fighting Face Wash",
+  "description": "A refreshing herbal face wash that fights acne and keeps your skin clear and soft.",
+  "price": 450,
+  "stock": 50,
+  "category": "Face Wash",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/81bd7c5c-4677-4c14-b8ab-5aa3c5192443_acne_fiting_face_wash_lBV1w1ZD_.jpg",
+      "filename": "acne_fiting_face_wash.jpg"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c2"
+  },
+  "name": "Moisturizing Cream",
+  "description": "Lightweight moisturizing cream that nourishes and hydrates the skin all day.",
+  "price": 520,
+  "stock": 60,
+  "category": "Cream",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/7b167ec3-c1c7-4912-bc96-bb6169d4b927_cream_Fwv_Vc_kH.jpg",
+      "filename": "cream.jpg"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c1"
+  },
+  "name": "Charcoal Face Wash",
+  "description": "Deep cleansing charcoal formula that removes dirt, oil, and impurities for glowing skin.",
+  "price": 400,
+  "stock": 45,
+  "category": "Face Wash",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/f9d1fbf4-2231-498c-9893-663c6973cd6d_charcole_face_wash_hu6lnjGol.jpg",
+      "filename": "charcole_face_wash.jpg"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "690e4112f27e80981ae685c6"
+  },
+  "name": "Multani Face Pack",
+  "description": "Natural multani mitti pack that purifies and refreshes dull skin.",
+  "price": 390,
+  "stock": 45,
+  "category": "Face Pack",
+  "status": "active",
+  "images": [
+    {
+      "url": "https://ik.imagekit.io/5bprdt07o/products/c2e76714-9c7b-47b9-8ce8-3d0f36b5d9bd_multani_face_pack_afd0GtGx8.jpg",
+      "filename": "multani_face_pack.jpg"
+    }
+  ]
+}]

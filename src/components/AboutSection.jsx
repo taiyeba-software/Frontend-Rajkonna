@@ -1,10 +1,28 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import { animated, useSpring, useTrail } from "@react-spring/web";
 import  StarBackground  from "./StarBackground";
 import { useInView } from "react-intersection-observer";
 
-
+const cardData = [
+  {
+    title: "Radical Transparency",
+    desc: "No black boxes. Nothing to hide. Just clean formulas you'll understand.",
+  },
+  {
+    title: "Clean, Beyond Reproach",
+    desc: "Truly safe, dermatologist-reviewed, verified by independent scientists.",
+  },
+  {
+    title: "Potent & Multi-Tasking",
+    desc: "Our formulas are shockingly effective and multitask like you do.",
+  },
+  {
+    title: "Conscious & Responsible",
+    desc: "Planet-friendly. Ethically sourced. Always made with care.",
+  },
+];
 
 export const AboutSection = () => {
   const ref = useRef(null);
@@ -58,8 +76,6 @@ export const AboutSection = () => {
 
   // Each layer moves at a different speed
   const imageSpring = useSpring({ transform: `translateY(${scrollY * -150}px)` });
-  const leafSpring = useSpring({ transform: `translateY(${scrollY * -100}px)` });
-  const peelSpring = useSpring({ transform: `translateY(${scrollY * -70}px)` });
   const cardsSpring = useSpring({ transform: `translateY(${scrollY * -120}px)` });
 
 
@@ -204,23 +220,3 @@ export const AboutSection = () => {
     </section>
   );
 };
-
-
-const cardData = [
-  {
-    title: "Radical Transparency",
-    desc: "No black boxes. Nothing to hide. Just clean formulas you'll understand.",
-  },
-  {
-    title: "Clean, Beyond Reproach",
-    desc: "Truly safe, dermatologist-reviewed, verified by independent scientists.",
-  },
-  {
-    title: "Potent & Multi-Tasking",
-    desc: "Our formulas are shockingly effective and multitask like you do.",
-  },
-  {
-    title: "Conscious & Responsible",
-    desc: "Planet-friendly. Ethically sourced. Always made with care.",
-  },
-];

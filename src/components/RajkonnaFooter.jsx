@@ -1,4 +1,5 @@
 import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
 
@@ -21,17 +22,17 @@ export const RajkonnaFooter = () => {
         <div className="flex gap-6 text-primary text-2xl">
           {[
             {
-              href: "https://www.facebook.com/rajkonnabd",
+              href: "https://www.facebook.com/rajkonna.social/",
               icon: <FaFacebookF />,
               label: "Facebook",
             },
             {
-              href: "https://www.instagram.com/rajkonnabd/",
+              href: "https://www.instagram.com/ami.rajkonna/",
               icon: <FaInstagram />,
               label: "Instagram",
             },
             {
-              href: "https://www.tiktok.com/@rajkonnabd",
+              href: "https://www.tiktok.com/@shajgojbd/",
               icon: <FaTiktok />,
               label: "TikTok",
             },

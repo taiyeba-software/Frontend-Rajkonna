@@ -2,7 +2,7 @@ import React from "react";
 import { useProducts } from "../context/useProducts";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-import  StarBackground  from "./StarBackground";
+import { normalizeId } from "../lib/utils";
 
 const ProductCard = ({ product }) => {
   const { user } = useAuth();
@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      deleteProduct(product._id, user);
+      deleteProduct(normalizeId(product._id || product), user);
     }
   };
 
@@ -22,7 +22,7 @@ const ProductCard = ({ product }) => {
     <div className="border rounded-lg shadow-md p-4 relative hover:shadow-xl transition-all duration-300 bg-background/80 text-background">
     
    
-      <Link to={`/products/${product._id}`}>
+      <Link to={`/products/${normalizeId(product._id || product)}`}>
         <img
           src={product.images?.[0]?.url || "/placeholder.png"}
           alt={product.name}

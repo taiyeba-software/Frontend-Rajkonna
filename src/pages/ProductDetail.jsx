@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import { useProducts } from "../context/useProducts";
 import { useAuth } from "../context/AuthContext";
 import ProfileSidebar from "../components/ProfileSidebar";
+import { normalizeId } from "../lib/utils";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const { fetchProductById, addToCart } = useProducts();
+  const { addToCart, fetchProductById } = useProducts();
   const { user } = useAuth();
 
   const [product, setProduct] = useState(null);
@@ -15,19 +16,23 @@ const ProductDetail = () => {
   const [isProfileSidebarOpen, setIsProfileSidebarOpen] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     const getProduct = async () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchProductById(id);
-        setProduct(data);
-      } catch {
-        setError("Failed to load product.");
+        const pid = normalizeId(id);
+        const data = await fetchProductById(pid);
+        if (mounted) setProduct(data);
+      } catch (err) {
+        console.error(err);
+        if (mounted) setError("Product not found.");
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     getProduct();
+    return () => { mounted = false; };
   }, [id, fetchProductById]);
 
   const handleAddToCart = () => {

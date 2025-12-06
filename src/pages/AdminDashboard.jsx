@@ -119,7 +119,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-[#7ca4a1]">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-[#7ca4a1]">Dashboard</h1>
           <button
             onClick={() => navigate(-1)}
             className="cosmic-button"
@@ -166,7 +166,7 @@ const AdminDashboard = () => {
                           onClick={() => handleDeleteOrder(order._id)}
                           disabled={loading}
                           className="text-white px-2 py-1 rounded text-sm hover:opacity-80"
-                          style={{ backgroundColor: 'crimson' }}
+                          style={{ backgroundColor: loading ? 'gray' : 'crimson' }}
                         >
                           Delete
                         </button>

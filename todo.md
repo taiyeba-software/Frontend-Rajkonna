@@ -1,3 +1,2 @@
-# TODO for Login/Register Input Styling Changes
-
-- [ ] Update input className in AuthModal.jsx for name, email, and password fields to set text color to black and placeholder to gray.
+- [x] Modify ProductDetail.jsx to fetch product from API using fetchProductById instead of static JSON
+- [ ] Test product detail page and add to cart functionality

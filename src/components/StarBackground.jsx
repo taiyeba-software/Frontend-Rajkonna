@@ -11,7 +11,8 @@ const StarBackground = () => {
     const layers = [
       { depth: 0, densityDivisor: 15000, sizeMultiplier: 0.6, baseOpacity: 0.5, blur: 0 },
       { depth: 1, densityDivisor: 12000, sizeMultiplier: 1.0, baseOpacity: 0.7, blur: 0 },
-      
+      { depth: 2, densityDivisor: 12000, sizeMultiplier: 1.0, baseOpacity: 0.7, blur: 0 }
+    
       
     ];
 
@@ -43,7 +44,7 @@ const StarBackground = () => {
     generateLayers();
 
     // debug mount (will appear in browser console)
-    // eslint-disable-next-line no-console
+    
     console.debug("StarBackground mounted, layers:", layers.length);
 
     const resizeHandler = () => generateLayers();

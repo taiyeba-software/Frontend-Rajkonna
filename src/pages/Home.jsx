@@ -1,7 +1,7 @@
 import {Navbar } from "../components/Navbar";
 import { Hero} from "../components/Hero";
 import {AboutSection} from "../components/AboutSection"
-import ProductList from "./ProductList";
+import { Product } from "../components/Product";
 
 import { Contact} from "../components/Contact";
 import { RajkonnaFooter } from "../components/RajkonnaFooter";
@@ -23,8 +23,7 @@ const Home = () => (
         <AboutSection />
 
         <section id="products" className="relative w-full min-h-screen px-1 ">
-          <h1 className="text-3xl font-bold text-center py-8 text-white">Rajkonna Products</h1>
-          <ProductList /> {/* reusable component */}
+          <Product /> {/* reusable component */}
         </section>
 
         <Contact/>

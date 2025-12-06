@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useProducts } from "../context/useProducts";
+import { normalizeId } from "../lib/utils";
 import toast from "react-hot-toast";
 import ProfileSidebar from "../components/ProfileSidebar";
 
@@ -134,7 +135,7 @@ const CartPage = () => {
               const bgColor = colorPalette[index % colorPalette.length];
               return (
                 <div
-                  key={product._id}
+                  key={normalizeId(product._id)}
                   className="flex flex-col md:flex-row md:items-center justify-between border rounded-lg p-4"
                   style={{ backgroundColor: bgColor }}
                 >
@@ -151,33 +152,33 @@ const CartPage = () => {
                       <p>Price: ৳{product.price}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <button
-                          onClick={() => handleUpdateQuantity(product._id, qty - 1)}
-                          disabled={updatingQuantities.has(product._id) || qty <= 1}
+                          onClick={() => handleUpdateQuantity(normalizeId(product._id), qty - 1)}
+                          disabled={updatingQuantities.has(normalizeId(product._id)) || qty <= 1}
                           className="px-2 py-1 bg-gray-300 text-black rounded hover:bg-gray-400 disabled:opacity-50 text-sm"
                         >
                           -
                         </button>
                         <span className="px-2">{qty}</span>
                         <button
-                          onClick={() => handleUpdateQuantity(product._id, qty + 1)}
-                          disabled={updatingQuantities.has(product._id)}
+                          onClick={() => handleUpdateQuantity(normalizeId(product._id), qty + 1)}
+                          disabled={updatingQuantities.has(normalizeId(product._id))}
                           className="px-2 py-1 bg-gray-300 text-black rounded hover:bg-gray-400 disabled:opacity-50 text-sm"
                         >
                           +
                         </button>
-                        {updatingQuantities.has(product._id) && <span className="text-sm text-gray-500">Updating...</span>}
+                        {updatingQuantities.has(normalizeId(product._id)) && <span className="text-sm text-gray-500">Updating...</span>}
                       </div>
                     </div>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     <p className="font-bold">Item Total: ৳{lineTotal}</p>
                     <button
-                      onClick={() => handleRemoveItem(product._id)}
-                      disabled={removingItems.has(product._id)}
+                      onClick={() => handleRemoveItem(normalizeId(product._id))}
+                      disabled={removingItems.has(normalizeId(product._id))}
                       className="px-3 py-1 text-white rounded disabled:opacity-50 text-sm"
                       style={{ backgroundColor: 'crimson' }}
                     >
-                      {removingItems.has(product._id) ? "Removing..." : "Remove"}
+                      {removingItems.has(normalizeId(product._id)) ? "Removing..." : "Remove"}
                     </button>
                   </div>
                 </div>
