@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { X, Edit, Save, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import api from "@/api/axiosInstance";
 
 const ProfileSidebar = ({ isOpen, onClose }) => {
   const [userData, setUserData] = useState({
@@ -35,17 +36,10 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/auth/profile", {
-        method: "GET",
-        credentials: "include", // Include cookies for auth
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch profile");
-      }
-      const data = await response.json();
+      const { data } = await api.get("/auth/profile");
       setUserData(data.user);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message);
       toast.error("Failed to load profile");
     } finally {
       setLoading(false);
@@ -69,23 +63,12 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
         };
       }
 
-      const response = await fetch("/api/auth/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(updates),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update profile");
-      }
-      const data = await response.json();
+      const { data } = await api.put("/auth/profile", updates);
       setUserData(data.user);
       setIsEditing(false);
       toast.success("Profile updated successfully!");
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message);
       toast.error("Failed to update profile");
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { gsap } from 'gsap';
+import api from '@/api/axiosInstance';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -24,18 +25,11 @@ const AdminDashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/orders?page=${currentPage}&limit=10`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch orders');
-      }
-      const data = await response.json();
+      const { data } = await api.get(`/orders?page=${currentPage}&limit=10`);
       setOrders(data.orders || []);
       setTotalPages(data.totalPages || 1);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message);
       toast.error('Failed to load orders');
     } finally {
       setLoading(false);
@@ -49,19 +43,12 @@ const AdminDashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/orders/${orderId}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch order details');
-      }
-      const data = await response.json();
+      const { data } = await api.get(`/orders/${orderId}`);
       setSelectedOrder(data);
       setSelectedOrderId(orderId);
       setShowDetails(true);
-    } catch {
-      setError('Failed to load order details');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to load order details');
       toast.error('Failed to load order details');
     } finally {
       setLoading(false);
@@ -93,17 +80,11 @@ const AdminDashboard = () => {
   const handleDeleteOrder = async (orderId) => {
     if (!confirm('Are you sure you want to delete this order?')) return;
     try {
-      const response = await fetch(`/api/orders/${orderId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete order');
-      }
+      await api.delete(`/orders/${orderId}`);
       toast.success('Order deleted successfully');
-      fetchOrders(page); // Refresh the orders list
+      fetchOrders(page);
     } catch (err) {
-      toast.error(err.message || 'Failed to delete order');
+      toast.error(err.response?.data?.message || err.message);
     }
   };
 

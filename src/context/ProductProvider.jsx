@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { ProductContext } from "./ProductContext";
 import { normalizeId } from "../lib/utils";
-
-// 🔧 Use environment variable or fallback to localhost
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+import api from "@/api/axiosInstance";
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
@@ -17,13 +15,7 @@ export const ProductProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const url = new URL(`${API_BASE}/api/products`);
-      if (query.q) url.searchParams.append("q", query.q);
-
-      const res = await fetch(url, { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch products");
-
-      const data = await res.json();
+      const { data } = await api.get("/products", { params: query.q ? { q: query.q } : {} });
       setProducts(data.products || []);
     } catch (err) {
       console.error("fetchProducts error:", err);
@@ -36,12 +28,8 @@ export const ProductProvider = ({ children }) => {
   // 🟢 Fetch single product by ID
   const fetchProductById = async (id) => {
     try {
-      const res = await fetch(`${API_BASE}/api/products/${id}`, {
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to fetch product");
-      const data = await res.json();
-      return data.product || data; // backend might return {product: {...}} or directly {...}
+      const { data } = await api.get(`/products/${id}`);
+      return data.product || data;
     } catch (err) {
       console.error("fetchProductById error:", err);
       throw err;
@@ -56,23 +44,15 @@ export const ProductProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/cart/items`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: normalizeId(product._id || product), qty: 1 }),
+      const { data } = await api.post("/cart/items", { 
+        productId: normalizeId(product._id || product), 
+        qty: 1 
       });
-
-      const result = await res.json();
-      if (!res.ok) {
-        toast.error(result.message || "Failed to add to cart");
-        return;
-      }
-
       toast.success(`${product.name} added to cart!`);
+      return data;
     } catch (err) {
       console.error("addToCart error:", err);
-      toast.error("Network error, please try again.");
+      toast.error(err.response?.data?.message || "Network error, please try again.");
     }
   };
 
@@ -80,20 +60,13 @@ export const ProductProvider = ({ children }) => {
   const addProduct = async (formData, user) => {
     if (!user?.isAdmin) return toast.error("Not authorized!");
     try {
-      const res = await fetch(`${API_BASE}/api/products`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-      if (!res.ok) throw new Error("Failed to add product");
-
-      const data = await res.json();
+      const { data } = await api.post("/products", formData);
       setProducts((prev) => [data.product, ...prev]);
       toast.success("Product added successfully!");
       return data;
     } catch (err) {
       console.error(err.message);
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || err.message);
       return null;
     }
   };
@@ -102,22 +75,14 @@ export const ProductProvider = ({ children }) => {
   const editProduct = async (id, updatedProduct, user) => {
     if (!user?.isAdmin) return toast.error("Not authorized!");
     try {
-      const res = await fetch(`${API_BASE}/api/products/${normalizeId(id)}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedProduct),
-      });
-      if (!res.ok) throw new Error("Failed to update product");
-
-      const data = await res.json();
+      const { data } = await api.put(`/products/${normalizeId(id)}`, updatedProduct);
       setProducts((prev) =>
         prev.map((p) => (normalizeId(p._id) === normalizeId(id) ? data.product || data : p))
       );
       toast.success("Product updated successfully!");
     } catch (err) {
       console.error("editProduct error:", err);
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || err.message);
     }
   };
 
@@ -125,17 +90,12 @@ export const ProductProvider = ({ children }) => {
   const deleteProduct = async (id, user) => {
     if (!user?.isAdmin) return toast.error("Not authorized!");
     try {
-      const res = await fetch(`${API_BASE}/api/products/${normalizeId(id)}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to delete product");
-
+      await api.delete(`/products/${normalizeId(id)}`);
       setProducts((prev) => prev.filter((p) => normalizeId(p._id) !== normalizeId(id)));
       toast.success("Product deleted successfully!");
     } catch (err) {
       console.error("deleteProduct error:", err);
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || err.message);
     }
   };
 
@@ -147,23 +107,11 @@ export const ProductProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/cart/items/${productId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Failed to remove item from cart");
-        return;
-      }
-
+      await api.delete(`/cart/items/${productId}`);
       toast.success("Item removed from cart!");
-      // Optionally refetch cart or update local state
-      // Since CartPage fetches fresh data, we can leave it as is
     } catch (err) {
       console.error("removeItemFromCart error:", err);
-      toast.error("Network error, please try again.");
+      toast.error(err.response?.data?.message || "Network error, please try again.");
     }
   };
 
@@ -174,29 +122,17 @@ export const ProductProvider = ({ children }) => {
       return;
     }
 
-    // Confirm before clearing unless skipped
     if (!skipConfirm && !window.confirm("Are you sure you want to clear your entire cart?")) {
       return;
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/cart`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Failed to clear cart");
-        return;
-      }
-
+      await api.delete("/cart");
       toast.success("Cart cleared successfully!");
-      // Optionally update local cart state
       setCart(null);
     } catch (err) {
       console.error("clearCart error:", err);
-      toast.error("Network error, please try again.");
+      toast.error(err.response?.data?.message || "Network error, please try again.");
     }
   };
 
@@ -213,25 +149,11 @@ export const ProductProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/cart/items/${productId}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qty: newQty }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        toast.error(errorData.message || "Failed to update quantity");
-        return;
-      }
-
+      await api.put(`/cart/items/${productId}`, { qty: newQty });
       toast.success("Quantity updated!");
-      // Optionally refetch cart or update local state
-      // Since CartPage fetches fresh data, we can leave it as is
     } catch (err) {
       console.error("updateCartItemQuantity error:", err);
-      toast.error("Network error, please try again.");
+      toast.error(err.response?.data?.message || "Network error, please try again.");
     }
   };
 

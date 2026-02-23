@@ -4,9 +4,7 @@ import { useProducts } from "../context/useProducts";
 import { normalizeId } from "../lib/utils";
 import toast from "react-hot-toast";
 import ProfileSidebar from "../components/ProfileSidebar";
-
-// 🔧 Use environment variable or fallback to localhost
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+import api from "@/api/axiosInstance";
 
 const CartPage = () => {
   const { user } = useAuth();
@@ -21,12 +19,7 @@ const CartPage = () => {
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/cart`, {
-        method: "GET",
-        credentials: "include"
-      });
-      if (!res.ok) throw new Error("Failed to fetch cart");
-      const data = await res.json();
+      const { data } = await api.get("/cart");
       setCart(data);
     } catch (error) {
       console.error(error);
@@ -85,25 +78,14 @@ const CartPage = () => {
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     try {
-      const response = await fetch(`${API_BASE}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ paymentMethod: 'COD' }),
-      });
-      if (response.ok) {
-        toast.success('Order placed successfully!');
-        await clearCart(user, true); // Clear the cart after successful order without confirmation
-        await fetchCart(); // Refresh cart data
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to place order');
+      const response = await api.post("/orders", { paymentMethod: "COD" });
+      if (response.status === 200) {
+        toast.success("Order placed successfully!");
+        await clearCart(user, true);
+        await fetchCart();
       }
     } catch (error) {
-      console.error('Checkout error:', error);
-      toast.error('Network error, please try again');
+      toast.error(error.response?.data?.message || "Failed to place order");
     } finally {
       setIsCheckingOut(false);
     }
