@@ -15,6 +15,8 @@ export const ProductProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
+      console.log("🔥 fetchProducts CALLED");
+      console.log("🌍 API URL:", import.meta.env.VITE_API_URL);
       const { data } = await api.get("/products", { params: query.q ? { q: query.q } : {} });
       setProducts(data.products || []);
     } catch (err) {
