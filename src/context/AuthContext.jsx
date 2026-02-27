@@ -6,20 +6,32 @@ import api from "@/api/axiosInstance";
 
 export const AuthContext = createContext();
 
+const normalizeUser = (rawUser) => {
+  if (!rawUser) return null;
+  if (rawUser.role) return rawUser;
+  if (rawUser.isAdmin === true) return { ...rawUser, role: "admin" };
+  return rawUser;
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   // Example: fetch user info from API or localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      const parsedUser = normalizeUser(JSON.parse(storedUser));
+      setUser(parsedUser);
+      localStorage.setItem("user", JSON.stringify(parsedUser));
+    }
   }, []);
 
   const login = async (email, password) => {
     try {
       const { data } = await api.post("/auth/login", { email, password });
-      setUser(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      const normalizedUser = normalizeUser(data.user);
+      setUser(normalizedUser);
+      localStorage.setItem("user", JSON.stringify(normalizedUser));
       toast.success("Logged in successfully!");
     } catch (err) {
       toast.error(err.response?.data?.message || err.message);
@@ -29,8 +41,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       const { data } = await api.post("/auth/register", { name, email, password });
-      setUser(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      const normalizedUser = normalizeUser(data.user);
+      setUser(normalizedUser);
+      localStorage.setItem("user", JSON.stringify(normalizedUser));
       toast.success("Registered successfully!");
     } catch (err) {
       toast.error(err.response?.data?.message || err.message);
