@@ -80,12 +80,14 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteOrder = async (orderId) => {
-    // ✅ 1. Admin check FIRST
-    if (!user?.isAdmin) {
+
+    // ✅ Admin check FIRST
+    if (user?.role !== "admin") {
       return toast.error("Only admin can delete the order");
     }
 
     if (!confirm("Are you sure you want to delete this order?")) return;
+
     try {
       await api.delete(`/orders/${orderId}`);
       toast.success("Order deleted successfully");
