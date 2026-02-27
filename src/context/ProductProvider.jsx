@@ -60,7 +60,7 @@ export const ProductProvider = ({ children }) => {
 
   // 🟢 Add new product (Admin)
   const addProduct = async (formData, user) => {
-    if (!user?.isAdmin) return toast.error("Not authorized!");
+    if (user?.role !== "admin") return toast.error("Not authorized!");
     try {
       const { data } = await api.post("/products", formData);
       setProducts((prev) => [data.product, ...prev]);
@@ -75,7 +75,7 @@ export const ProductProvider = ({ children }) => {
 
   // 🟢 Edit product (Admin)
   const editProduct = async (id, updatedProduct, user) => {
-    if (!user?.isAdmin) return toast.error("Not authorized!");
+    if (user?.role !== "admin") return toast.error("Not authorized!");
     try {
       const { data } = await api.put(`/products/${normalizeId(id)}`, updatedProduct);
       setProducts((prev) =>
@@ -90,7 +90,7 @@ export const ProductProvider = ({ children }) => {
 
   // 🟢 Delete product (Admin)
   const deleteProduct = async (id, user) => {
-    if (!user?.isAdmin) return toast.error("Not authorized!");
+    if (user?.role !== "admin") return toast.error("Not authorized!");
     try {
       await api.delete(`/products/${normalizeId(id)}`);
       setProducts((prev) => prev.filter((p) => normalizeId(p._id) !== normalizeId(id)));

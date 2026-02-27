@@ -42,7 +42,7 @@ const ProductCard = ({ product }) => {
         </button>
       </div>
 
-      {user?.isAdmin && (
+      {user?.role === "admin" && (
         <button
           onClick={handleDelete}
           className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md transition"

@@ -40,7 +40,7 @@ const EditProduct = () => {
     editProduct(id, { ...form, price: parseFloat(form.price) }, user);
   };
 
-  if (!user?.isAdmin) {
+  if (user?.role !== "admin") {
     return <p className="text-center mt-10 text-red-500">Access denied.</p>;
   }
 
