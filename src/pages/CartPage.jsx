@@ -78,14 +78,18 @@ const CartPage = () => {
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     try {
-      const response = await api.post("/orders", { paymentMethod: "COD" });
-      if (response.status === 200) {
-        toast.success("Order placed successfully!");
-        await clearCart(user, true);
-        await fetchCart();
-      }
+      await api.post("/orders", { paymentMethod: "COD" });
+
+      // ✅ 1. Show success popup
+      toast.success("Order placed successfully!");
+
+      // ✅ 2. Clear cart visually
+      setCart({ items: [] });
+
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to place order");
+      toast.error(
+        error.response?.data?.message || "Failed to place order"
+      );
     } finally {
       setIsCheckingOut(false);
     }
