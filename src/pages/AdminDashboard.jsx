@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { gsap } from 'gsap';
 import api from '@/api/axiosInstance';
+import { useAuth } from '../context/AuthContext';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -78,10 +80,15 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteOrder = async (orderId) => {
-    if (!confirm('Are you sure you want to delete this order?')) return;
+    // ✅ 1. Admin check FIRST
+    if (!user?.isAdmin) {
+      return toast.error("Only admin can delete the order");
+    }
+
+    if (!confirm("Are you sure you want to delete this order?")) return;
     try {
       await api.delete(`/orders/${orderId}`);
-      toast.success('Order deleted successfully');
+      toast.success("Order deleted successfully");
       fetchOrders(page);
     } catch (err) {
       toast.error(err.response?.data?.message || err.message);
